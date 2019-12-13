@@ -13,7 +13,8 @@ Gem::Specification.new do |spec|
   spec.files       = [
                        "lib/bestie.rb",
                        "spec/support/shared-examples/capitalizable.rb",
-                       "spec/support/shared-examples/undestroyable.rb"
+                       "spec/support/shared-examples/undestroyable.rb",
+                       "spec/support/shared-examples/stripable.rb"
                      ]
   spec.authors     = ["Yellowme"]
   spec.email       = 'hola@yellowme.mx'
