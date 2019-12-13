@@ -3,7 +3,9 @@ require "bestie/railtie"
 require 'strip_attributes'
 require 'active_model_serializers'
 
-require "bestie/base_repository"
+require "bestie/repositories/base_repository"
+require "bestie/repositories/catalogs/concerns/model_caching_extention"
+require "bestie/repositories/catalogs/base_catalog"
 require "bestie/concerns/guard/capitalizable"
 require "bestie/concerns/validations/undestroyable"
 require 'bestie/formatter/null_attributes_remover'
@@ -25,6 +27,7 @@ require 'bestie/errors/payment_required'
 require 'bestie/errors/precondition_failed'
 require 'bestie/errors/route_not_found'
 require 'bestie/errors/unauthorized'
+require "bestie/middleware/catch_json_parse_errors"
 
 mydir = __dir__
 

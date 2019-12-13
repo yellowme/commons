@@ -17,7 +17,6 @@ RSpec.describe Bestie::Errors::Conflict, type: :serializer do
         expect(serialized.keys).to include :code
         expect(serialized.keys).to include :title
         expect(serialized.keys).to include :detail
-        expect(serialized.keys).to include :meta
       end
     end
 

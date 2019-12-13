@@ -10,7 +10,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_12_233443) do
+ActiveRecord::Schema.define(version: 2019_12_13_072543) do
+
+  create_table "application_parameters", force: :cascade do |t|
+    t.string "name"
+    t.string "value"
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "name"

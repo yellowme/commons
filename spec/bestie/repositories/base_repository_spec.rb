@@ -1,4 +1,4 @@
-RSpec.describe 'Bestie::BaseRepository' do
+RSpec.describe 'Bestie::Repositories::BaseRepository' do
   let(:user) { create(:user) }
   let(:valid_params) do
     {

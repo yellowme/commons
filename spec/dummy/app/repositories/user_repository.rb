@@ -1,2 +1,2 @@
-class UserRepository < Bestie::BaseRepository
+class UserRepository < Bestie::Repositories::BaseRepository
 end
