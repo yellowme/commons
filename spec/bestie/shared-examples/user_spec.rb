@@ -1,4 +1,3 @@
-#require 'bestie'
 require 'support/shared-examples/undestroyable'
 require 'support/shared-examples/capitalizable'
 require 'support/shared-examples/stripable'
