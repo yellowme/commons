@@ -10,7 +10,7 @@ module Bestie
         private
 
         def prevent_destroy
-          raise APIError::Unauthorized
+          raise Bestie::Errors::Unauthorized
         end
       end
     end

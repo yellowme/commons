@@ -23,7 +23,7 @@ module Bestie
         def capitalize_attrs
           self.class.only.each do |attr|
             value = self.instance_eval(attr.to_s)
-            self.send("#{attr.to_s}=", Buddy::Formatter::StringUtils.capitalize(value)) unless value.nil?
+            self.send("#{attr.to_s}=", Bestie::Formatter::StringUtils.capitalize(value)) unless value.nil?
           end
         end
       end

@@ -10,6 +10,3 @@ gemspec
 # your gemspec. These might include edge Rails or gems from your path or
 # Git. Remember to move these dependencies to your gemspec before releasing
 # your gem to rubygems.org.
-
-gem "buddy-ruby", git: 'https://github.com/yellowme/buddy-ruby.git'
-gem "api-error-ruby", git: 'https://github.com/yellowme/api-error-ruby.git'

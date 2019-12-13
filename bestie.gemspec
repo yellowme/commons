@@ -33,6 +33,7 @@ Gem::Specification.new do |spec|
   spec.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
 
   spec.add_dependency "rails", "~> 6.0.1"
+  spec.add_dependency 'json', '~> 1.8'
   spec.add_dependency "active_model_serializers", "~> 0.10.10"
   spec.add_dependency "strip_attributes"
 

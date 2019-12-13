@@ -1,22 +1,9 @@
-GIT
-  remote: https://github.com/yellowme/api-error-ruby.git
-  revision: ba497ebba44a80e08de4ab3ed8b2f18d2535b458
-  specs:
-    api-error-ruby (0.2.1)
-      json (~> 1.8)
-
-GIT
-  remote: https://github.com/yellowme/buddy-ruby.git
-  revision: 0ecbf1fd2eb1e45d18b39de1149f727c93a41f45
-  specs:
-    buddy-ruby (0.2.0)
-      json (~> 1.8)
-
 PATH
   remote: .
   specs:
     bestie (0.3.0)
       active_model_serializers (~> 0.10.10)
+      json (~> 1.8)
       rails (~> 6.0.1)
       strip_attributes
 
@@ -194,9 +181,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  api-error-ruby!
   bestie!
-  buddy-ruby!
   factory_bot_rails (~> 5.1.1)
   faker
   rspec-rails
