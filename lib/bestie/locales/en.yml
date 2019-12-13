@@ -1,2 +1,54 @@
 en:
-  
+  status_code:
+    IER4001_route_not_found:
+      code: 'IER4001'
+      title: 'Ruta no encontrada'
+      detail: 'IER4001: La ruta solicitada no se encuentra registrada'
+    IER4002_unauthorized:
+      code: 'IER4002'
+      title: 'No tienes permisos validos'
+      detail: 'IER4002: Parece que no tienes los permisos/credenciales correctos'
+    IER4003_bad_request:
+      code: 'IER4003'
+      title: 'El servidor no puede o no procesará la solicitud debido a un error aparente del cliente'
+      detail: 'IER4003: Su solicitud probablemente tenga alguna sintaxis con formato incorrecto, un encabezado incorrecto u otra cosa que no sepamos cómo procesar'
+    IER4004_conflict:
+      code: 'IER4004'
+      title: 'Hay un conflicto'
+      detail: 'IER4004: Su solicitud parece chocar con el estado del servidor'
+    IER4005_forbidden:
+      code: 'IER4005'
+      title: 'Tienes prohibido hacer esto.'
+      detail: 'IER4005: Parece que intentaste hacer algo que no debías hacer'
+    IER4006_invalid_resource:
+      code: 'IER4006'
+      title: 'Errores al procesar las validaciones.'
+      detail: 'IER4006: La información que ha enviado no es válida'
+    IER4007_missing_parameter:
+      code: 'IER4007'
+      title: 'Hacen faltan parámetros.'
+      detail: 'IER4007: Hacen faltan parámetros a la información suministrada'
+    IER4008_not_unique:
+      code: 'IER4008'
+      title: 'Hacen falta parámetros.'
+      detail: 'IER4008: Has violado una restricción de unicidad'
+    IER4009_payment_required:
+      code: 'IER4009'
+      title: 'Necesitas hacer un pago para que esta acción funcione.'
+      detail: 'IER4009: El servidor requiere que se realice un pago antes de continuar.'
+    IER4010_precondition_failed:
+      code: 'IER4010'
+      title: 'No se cumplió una condición previa.'
+      detail: 'IER4010: El servidor no cumple con una de las condiciones previas que el solicitante coloca en la solicitud.'
+    IER4222_unprocessable_entity:
+      code: 'IER4222'
+      title: 'Incapaz de procesar la petición'
+      detail: 'IER4222: No se puede procesar la petición'
+    IER5000_internal_server_error:
+      code: 'IER5000'
+      title: 'Server Error.'
+      detail: 'IER5000: Su solicitud parece haber causado un error de servidor'
+    IER5030_maintenance_mode:
+      code: 'IER5030'
+      title: 'El servidor está en mantenimiento'
+      detail: 'IER5030: Mantenimiento en proceso'
