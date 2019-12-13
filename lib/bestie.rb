@@ -31,7 +31,7 @@ require "bestie/middleware/catch_json_parse_errors"
 
 mydir = __dir__
 
-I18n.load_path += Dir[File.join(mydir, 'locales', '**/*.yml')]
+I18n.load_path += Dir[File.join(mydir, 'bestie', 'locales', '**/*.yml')]
 I18n.reload! if I18n.backend.initialized?
 
 module Bestie
