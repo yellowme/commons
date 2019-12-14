@@ -6,6 +6,7 @@ require 'active_model_serializers'
 require "bestie/repositories/base_repository"
 require "bestie/repositories/catalogs/concerns/model_caching_extention"
 require "bestie/repositories/catalogs/base_catalog"
+require "bestie/services/concerns/callable"
 require "bestie/concerns/guard/capitalizable"
 require "bestie/concerns/validations/undestroyable"
 require 'bestie/formatter/null_attributes_remover'

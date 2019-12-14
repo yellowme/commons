@@ -37,6 +37,118 @@ RSpec.describe 'Bestie::Repositories::BaseRepository' do
     end
   end
 
+  describe 'find_or_create_by!' do
+    describe 'works ok!' do
+      context 'when exists' do
+        let(:previous_user) { UserRepository.instance.create!(**valid_params.to_h.symbolize_keys) }
+        before do
+          previous_user
+        end
+        subject { UserRepository.instance.find_or_create_by!(**valid_params.to_h.symbolize_keys) }
+
+        it do
+          expect(subject).to be_an_instance_of User
+          expect(subject.id).to eq previous_user.id
+          expect(subject.name).to eq valid_params[:name]
+          expect(subject.last_name).to eq valid_params[:last_name]
+        end
+      end
+
+      context 'when creates' do
+        let(:previous_valid_params) do
+          {
+            name: 'Johnny',
+            last_name: Faker::Name.last_name
+          }
+        end
+        let(:previous_user) { UserRepository.instance.create!(**previous_valid_params.to_h.symbolize_keys) }
+        before do
+          previous_user
+        end
+        subject { UserRepository.instance.find_or_create_by!(**valid_params.to_h.symbolize_keys) }
+
+        it do
+          expect(subject).to be_an_instance_of User
+          expect(subject.id).not_to eq previous_user.id
+          expect(subject.name).to eq valid_params[:name]
+          expect(subject.last_name).to eq valid_params[:last_name]
+        end
+      end
+    end
+
+    context 'fails ok!' do
+      let(:invalid_params) do
+        {
+          last_name: Faker::Name.last_name,
+          age: 18
+        }
+      end
+
+      subject { UserRepository.instance.find_or_create_by!(**invalid_params.to_h.symbolize_keys) }
+
+      it { expect { subject }.to raise_error(ActiveRecord::RecordInvalid) }
+    end
+  end
+
+  describe 'where_first_or_create!' do
+    describe 'works ok!' do
+      context 'when exists' do
+        let(:previous_user) { UserRepository.instance.create!(**valid_params.to_h.symbolize_keys) }
+        let(:new_params) do
+          {
+            name: 'Jhonny',
+            last_name: 'Be Good'
+          }
+        end
+        before do
+          previous_user
+        end
+        subject { UserRepository.instance.where_first_or_create!({ name: valid_params[:name]}, **new_params.to_h.symbolize_keys) }
+
+        it do
+          expect(subject).to be_an_instance_of User
+          expect(subject.id).to eq previous_user.id
+          expect(subject.name).to eq valid_params[:name]
+          expect(subject.last_name).to eq valid_params[:last_name]
+        end
+      end
+
+      context 'when creates' do
+        let(:previous_user) { UserRepository.instance.create!(**valid_params.to_h.symbolize_keys) }
+        let(:new_params) do
+          {
+            name: 'Jhonny',
+            last_name: 'Be Good'
+          }
+        end
+        before do
+          previous_user
+        end
+        subject { UserRepository.instance.where_first_or_create!({ name: new_params[:name]}, **new_params.to_h.symbolize_keys) }
+
+        it do
+          expect(subject).to be_an_instance_of User
+          expect(subject.id).not_to eq previous_user.id
+          expect(subject.name).to eq new_params[:name]
+          expect(subject.last_name).to eq new_params[:last_name]
+        end
+      end
+    end
+
+    context 'fails ok!' do
+      let(:invalid_params) do
+        {
+          last_name: Faker::Name.last_name,
+          age: 18
+        }
+      end
+
+      subject { UserRepository.instance.where_first_or_create!({last_name: valid_params[:last_name]}, **invalid_params.to_h.symbolize_keys) }
+
+      it { expect { subject }.to raise_error(ActiveRecord::RecordInvalid) }
+    end
+  end
+
   describe 'create!' do
     context 'works ok!' do
       subject { UserRepository.instance.create!(**valid_params.to_h.symbolize_keys) }

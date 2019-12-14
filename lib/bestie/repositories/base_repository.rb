@@ -52,6 +52,21 @@ module Bestie
       end
 
       #
+      # Método que realiza una busqueda de la primer entrada,
+      # en caso de no encontrarlo crea un objeto con el bloque
+      #
+      # @param [Array<Hash>] params Listado de parámetros del objeto
+      # @param [block] block
+      #
+      # @return [Object] Objeto creado
+      #
+      # @raises [ActiveRecord::RecordInvalid]
+      #
+      def where_first_or_create!(params, attributes = nil, &block)
+        @db_client.where(params).first_or_create!(attributes, &block)
+      end
+
+      #
       # Método que realiza un guardado de un objeto
       #
       # @param [Array<Hash>] params Listado de parámetros del objeto
