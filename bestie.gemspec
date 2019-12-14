@@ -36,11 +36,11 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'json', '~> 1.8'
   spec.add_dependency "active_model_serializers", "~> 0.10.10"
   spec.add_dependency "strip_attributes"
+  spec.add_dependency "jwt"
 
   spec.add_development_dependency "sqlite3"
   spec.add_development_dependency "rspec-rails"
   spec.add_development_dependency "factory_bot_rails", "~> 5.1.1"
   spec.add_development_dependency "faker"
   spec.add_development_dependency "simplecov"
-  spec.add_development_dependency "jwt"
 end
