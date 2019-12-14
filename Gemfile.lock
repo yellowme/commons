@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    bestie (0.5.2)
+    bestie (0.6.0)
       active_model_serializers (~> 0.10.10)
       json (~> 1.8)
       rails (~> 6.0.1)
@@ -91,6 +91,7 @@ GEM
       concurrent-ruby (~> 1.0)
     json (1.8.6)
     jsonapi-renderer (0.2.2)
+    jwt (2.2.1)
     loofah (2.4.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
@@ -184,6 +185,7 @@ DEPENDENCIES
   bestie!
   factory_bot_rails (~> 5.1.1)
   faker
+  jwt
   rspec-rails
   simplecov
   sqlite3

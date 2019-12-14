@@ -42,4 +42,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "factory_bot_rails", "~> 5.1.1"
   spec.add_development_dependency "faker"
   spec.add_development_dependency "simplecov"
+  spec.add_development_dependency "jwt"
 end

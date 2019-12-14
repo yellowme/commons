@@ -4,6 +4,15 @@ module Bestie
       include Singleton
 
       #
+      # Método que devuelve el objeto según su ID
+      #
+      # @return [Object,nil]
+      #
+      def find(id)
+        @db_client.find(id)
+      end
+
+      #
       # Método que devuelve el objeto según parámetros
       #
       # @return [Object,nil]
