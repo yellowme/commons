@@ -1,6 +1,6 @@
 class User < ApplicationRecord
-  include Bestie::Concerns::Guard::Capitalizable
-  include Bestie::Concerns::Validations::Undestroyable
+  include Commons::Concerns::Guard::Capitalizable
+  include Commons::Concerns::Validations::Undestroyable
 
   capitalize only: [:name]
 

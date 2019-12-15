@@ -1,4 +1,4 @@
 module Catalogs
-  class ApplicationParameterRepository < Bestie::Repositories::Catalogs::BaseCatalog
+  class ApplicationParameterRepository < Commons::Repositories::Catalogs::BaseCatalog
   end
 end

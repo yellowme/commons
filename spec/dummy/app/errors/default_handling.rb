@@ -8,12 +8,12 @@ module DefaultHandling
       # https://stackoverflow.com/a/9121054/3287738
       rescue_from StandardError do |e|
         report_error(e)
-        respond Bestie::Errors::InternalServerError.new
+        respond Commons::Errors::InternalServerError.new
       end
 
-      rescue_from Bestie::Errors::ErrorBase do |e|
-        if e.instance_of?(Bestie::Errors::InternalServerError) ||
-           e.is_a?(Bestie::Errors::InternalServerError) ||
+      rescue_from Commons::Errors::ErrorBase do |e|
+        if e.instance_of?(Commons::Errors::InternalServerError) ||
+           e.is_a?(Commons::Errors::InternalServerError) ||
            Rails.env.development?
           report_error(e)
         end
@@ -25,7 +25,7 @@ module DefaultHandling
   def respond(error)
     render json: [error],
            status: error.status,
-           each_serializer: Bestie::Errors::ErrorSerializer
+           each_serializer: Commons::Errors::ErrorSerializer
   end
 
   def report_error(param)

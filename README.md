@@ -1,5 +1,5 @@
 # Bestie
-Bestie is Yellowme's Rails APIs utilities gem
+Commons is Yellowme's Rails APIs utilities gem
 
 ## Usage
 How to use my plugin.
@@ -8,7 +8,7 @@ How to use my plugin.
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'bestie', git: 'https://github.com/yellowme/bestie.git'
+gem 'commons', git: 'https://github.com/yellowme/commons.git'
 ```
 
 And then execute:
@@ -18,7 +18,7 @@ $ bundle
 
 Or install it yourself as:
 ```bash
-$ gem install bestie
+$ gem install commons
 ```
 
 ## Contributing

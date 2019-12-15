@@ -14,7 +14,7 @@ require "sprockets/railtie"
 # require "rails/test_unit/railtie"
 
 Bundler.require(*Rails.groups)
-require "bestie"
+require "commons"
 
 module Dummy
   class Application < Rails::Application
@@ -27,4 +27,3 @@ module Dummy
     # the framework and any gems in your application.
   end
 end
-

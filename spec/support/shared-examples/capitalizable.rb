@@ -10,7 +10,7 @@ RSpec.shared_examples_for "capitalizable" do |attrs|
     obj.valid?
     attrs.each do |attr|
       value = obj.instance_eval(attr.to_s)
-      expect(value).to eq Bestie::Formatter::StringUtils.capitalize(params[attr])
+      expect(value).to eq Commons::Formatter::StringUtils.capitalize(params[attr])
     end
   end
 end

@@ -11,7 +11,7 @@ require 'rspec/rails'
 require 'factory_bot_rails'
 require 'faker'
 
-Bestie.secret_key_base = 'xxxxx'
+Commons.secret_key_base = 'xxxxx'
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
