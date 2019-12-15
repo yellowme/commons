@@ -10,6 +10,9 @@ require 'commons/config'
 require 'commons/authentication/json_web_token'
 require 'commons/authentication/authenticate_by_jwt'
 
+# controllers
+require 'commons/controllers/schema_validable'
+
 # repositories
 require 'commons/repositories/base_repository'
 require 'commons/repositories/catalogs/concerns/model_caching_extention'
