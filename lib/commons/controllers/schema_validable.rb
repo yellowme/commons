@@ -9,7 +9,7 @@ module Commons
       #
       # @return [Hash]
       #
-      # @raise [Bestie::Errors::UnprocessableEntity]
+      # @raise [Commons::Errors::UnprocessableEntity]
       #
       def validate_request(request_data, schema)
         validated_params = schema.call(request_data)

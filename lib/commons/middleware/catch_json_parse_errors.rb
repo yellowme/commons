@@ -10,7 +10,7 @@ module Commons
       rescue ActionDispatch::Http::Parameters::ParseError => e
         if env['HTTP_ACCEPT'] =~ %r{application/json} ||
            env['CONTENT_TYPE'] =~ %r{application/json}
-          str = Commons::Errors::ErrorSerializer.new(Bestie::Errors::BadRequest.new(e)).to_json
+          str = Commons::Errors::ErrorSerializer.new(Commons::Errors::BadRequest.new(e)).to_json
           str.tr!("'", '\'')
           return [
             '400',

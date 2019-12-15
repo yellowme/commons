@@ -1,4 +1,4 @@
-# Bestie
+# Commons
 Commons is Yellowme's Rails APIs utilities gem
 
 ## Usage

@@ -18,7 +18,7 @@ Gem::Specification.new do |spec|
                      ]
   spec.authors     = ["Yellowme"]
   spec.email       = 'hola@yellowme.mx'
-  spec.homepage    = 'https://github.com/yellowme/bestie-rails'
+  spec.homepage    = 'https://github.com/yellowme/commons-rails'
   spec.license      = 'MIT'
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
