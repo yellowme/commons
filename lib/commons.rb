@@ -51,7 +51,12 @@ require 'commons/errors/unauthorized'
 # middleware
 require 'commons/middleware/catch_json_parse_errors'
 
-I18n.load_path += Dir[Rails.root.join('commons', 'locales', '**/*.yml').to_s]
+mydir = __dir__
+
+I18n.load_path += Dir[File.join(mydir, 'commons', 'config', 'locales', '**/*.yml').to_s]
+path = Gem.loaded_specs['commons'].full_gem_path
+I18n.load_path += Dir[File.join("#{path}/commons/config/locales/**/*.yml").to_s]
+
 I18n.reload! if I18n.backend.initialized?
 
 module Commons
