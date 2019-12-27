@@ -51,9 +51,7 @@ require 'commons/errors/unauthorized'
 # middleware
 require 'commons/middleware/catch_json_parse_errors'
 
-mydir = __dir__
-
-I18n.load_path += Dir[File.join(mydir, 'commons', 'locales', '**/*.yml')]
+I18n.load_path += Dir[Rails.root.join('commons', 'locales', '**/*.yml').to_s]
 I18n.reload! if I18n.backend.initialized?
 
 module Commons
