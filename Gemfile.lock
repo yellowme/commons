@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    commons (0.7.0)
+    commons (0.7.5)
       active_model_serializers (~> 0.10.10)
       dry-validation
       json (~> 1.8)
