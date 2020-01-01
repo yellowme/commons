@@ -4,6 +4,15 @@ module Commons
       include Singleton
 
       #
+      # Método que devuelve todos los objetos
+      #
+      # @return [Object,nil]
+      #
+      def all
+        @db_client.all
+      end
+
+      #
       # Método que devuelve el objeto según su ID
       #
       # @return [Object,nil]
@@ -35,14 +44,30 @@ module Commons
       #
       # Método que realiza un guardado de un objeto
       #
+      # @param [Object]
+      #
+      # @return [Boolean]
+      #
+      # @raise [ActiveRecord::RecordInvalid]
+      # @raise [ActiveRecord::RecordNotSaved]
+      #
+      def create!(object)
+        raise ArgumentError unless object.is_a? class_object
+
+        object.save!
+      end
+
+      #
+      # Método que realiza un guardado de un objeto
+      #
       # @param [Array<Hash>] params Listado de parámetros del objeto
       #
       # @return [Object] Objeto creado
       #
       # @raises [ActiveRecord::RecordInvalid]
       #
-      def create!(params)
-        @db_client.create!(params)
+      def create_from_params!(**params)
+        @db_client.create!(**params)
       end
 
       #
@@ -76,6 +101,20 @@ module Commons
       end
 
       #
+      # Método que guarda los cambios realizados a una instancia del objeto
+      #
+      # @param [Object]
+      #
+      # @return [Boolean]
+      #
+      # @raise [ActiveRecord::RecordInvalid]
+      # @raise [ActiveRecord::RecordNotSaved]
+      #
+      def update!(object)
+        create!(object)
+      end
+
+      #
       # Método que realiza un guardado de un objeto
       #
       # @param [Array<Hash>] params Listado de parámetros del objeto
@@ -84,7 +123,7 @@ module Commons
       #
       # @raises [ActiveRecord::RecordInvalid]
       #
-      def update!(id:, **params)
+      def update_from_params!(id:, **params)
         object = @db_client.find_by!(id: id)
         object.update!(params)
 
@@ -94,8 +133,12 @@ module Commons
       private
 
       def initialize
+        @db_client ||= class_object
+      end
+
+      def class_object
         model_name = self.class.to_s.gsub("Repository", "")
-        @db_client ||= Object.const_get model_name
+        Object.const_get model_name
       end
     end
   end

@@ -7,6 +7,27 @@ RSpec.describe 'Commons::Repositories::BaseRepository' do
     }
   end
 
+  describe 'all' do
+    context 'when data exists' do
+      let(:users_amount) { 10 }
+      before do
+        users_amount.times {
+          UserRepository.instance.create_from_params!(**valid_params.to_h.symbolize_keys)
+        }
+      end
+      subject { UserRepository.instance.all }
+
+      it do
+        expect(subject.count).to eq users_amount
+        expect(subject.first).to be_an_instance_of User
+      end
+    end
+
+    context 'when no data' do
+      it { expect(UserRepository.instance.all).to be_empty }
+    end
+  end
+
   describe 'find_by' do
     context 'by a valid id' do
       subject { UserRepository.instance.find_by(id: user.id) }
@@ -40,7 +61,7 @@ RSpec.describe 'Commons::Repositories::BaseRepository' do
   describe 'find_or_create_by!' do
     describe 'works ok!' do
       context 'when exists' do
-        let(:previous_user) { UserRepository.instance.create!(**valid_params.to_h.symbolize_keys) }
+        let(:previous_user) { UserRepository.instance.create_from_params!(**valid_params.to_h.symbolize_keys) }
         before do
           previous_user
         end
@@ -61,7 +82,7 @@ RSpec.describe 'Commons::Repositories::BaseRepository' do
             last_name: Faker::Name.last_name
           }
         end
-        let(:previous_user) { UserRepository.instance.create!(**previous_valid_params.to_h.symbolize_keys) }
+        let(:previous_user) { UserRepository.instance.create_from_params!(**previous_valid_params.to_h.symbolize_keys) }
         before do
           previous_user
         end
@@ -93,7 +114,7 @@ RSpec.describe 'Commons::Repositories::BaseRepository' do
   describe 'where_first_or_create!' do
     describe 'works ok!' do
       context 'when exists' do
-        let(:previous_user) { UserRepository.instance.create!(**valid_params.to_h.symbolize_keys) }
+        let(:previous_user) { UserRepository.instance.create_from_params!(**valid_params.to_h.symbolize_keys) }
         let(:new_params) do
           {
             name: 'Jhonny',
@@ -114,7 +135,7 @@ RSpec.describe 'Commons::Repositories::BaseRepository' do
       end
 
       context 'when creates' do
-        let(:previous_user) { UserRepository.instance.create!(**valid_params.to_h.symbolize_keys) }
+        let(:previous_user) { UserRepository.instance.create_from_params!(**valid_params.to_h.symbolize_keys) }
         let(:new_params) do
           {
             name: 'Jhonny',
@@ -150,8 +171,42 @@ RSpec.describe 'Commons::Repositories::BaseRepository' do
   end
 
   describe 'create!' do
+    describe 'works when' do
+      context 'using a valid user' do
+        let(:user) { build(:user) }
+
+        subject { UserRepository.instance.create!(user) }
+
+        it { expect(subject).to be true }
+      end
+    end
+
+    describe 'fails when' do
+      context 'is not a user' do
+        let(:employee) { build(:employee) }
+
+        it do
+          expect do
+            UserRepository.instance.create!(employee)
+          end.to raise_error(ArgumentError)
+        end
+      end
+
+      context 'is not a valid transaction' do
+        let(:user) { build(:user, name: nil) }
+
+        it do
+          expect do
+            UserRepository.instance.create!(user)
+          end.to raise_error(ActiveRecord::RecordInvalid)
+        end
+      end
+    end
+  end
+
+  describe 'create_from_params!' do
     context 'works ok!' do
-      subject { UserRepository.instance.create!(**valid_params.to_h.symbolize_keys) }
+      subject { UserRepository.instance.create_from_params!(**valid_params.to_h.symbolize_keys) }
 
       it do
         expect(subject).to be_an_instance_of User
@@ -163,15 +218,53 @@ RSpec.describe 'Commons::Repositories::BaseRepository' do
     context 'fails ok!' do
       let(:invalid_params) {}
 
-      subject { UserRepository.instance.create!(**invalid_params.to_h.symbolize_keys) }
+      subject { UserRepository.instance.create_from_params!(**invalid_params.to_h.symbolize_keys) }
 
       it { expect { subject }.to raise_error(ActiveRecord::RecordInvalid) }
     end
   end
 
   describe 'update!' do
+    describe 'works when' do
+      context 'using a valid user' do
+        let(:user) { create(:user) }
+
+        subject { UserRepository.instance.update!(user) }
+
+        it { expect(subject).to be true }
+      end
+    end
+
+    describe 'fails when' do
+      context 'is not a transaction' do
+        let(:employee) { create(:employee) }
+
+        it do
+          expect do
+            UserRepository.instance.update!(employee)
+          end.to raise_error(ArgumentError)
+        end
+      end
+
+      context 'is not a valid transaction' do
+        let(:user) { create(:user) }
+        let(:invalid_user) do
+          user.name = nil
+          user
+        end
+
+        it do
+          expect do
+            UserRepository.instance.update!(invalid_user)
+          end.to raise_error(ActiveRecord::RecordInvalid)
+        end
+      end
+    end
+  end
+
+  describe 'update_from_params!' do
     context 'works ok!' do
-      subject { UserRepository.instance.update!(id: user.id, **valid_params.to_h.symbolize_keys) }
+      subject { UserRepository.instance.update_from_params!(id: user.id, **valid_params.to_h.symbolize_keys) }
 
       it do
         expect(subject).to be_an_instance_of User
@@ -188,7 +281,7 @@ RSpec.describe 'Commons::Repositories::BaseRepository' do
           }
         end
 
-        subject { UserRepository.instance.update!(id: user.id, **invalid_params.to_h.symbolize_keys) }
+        subject { UserRepository.instance.update_from_params!(id: user.id, **invalid_params.to_h.symbolize_keys) }
 
         it { expect { subject }.to raise_error(ActiveRecord::RecordInvalid) }
       end
@@ -196,7 +289,7 @@ RSpec.describe 'Commons::Repositories::BaseRepository' do
       context 'by a unknown param' do
         it do
           expect do
-            UserRepository.instance.update!(
+            UserRepository.instance.update_from_params!(
               id: user.id,
               data: 'dummy'
             )
@@ -205,7 +298,7 @@ RSpec.describe 'Commons::Repositories::BaseRepository' do
       end
 
       context 'if not found' do
-        subject { UserRepository.instance.update!(id: Faker::Number.number(digits: 2), **valid_params.to_h.symbolize_keys) }
+        subject { UserRepository.instance.update_from_params!(id: Faker::Number.number(digits: 2), **valid_params.to_h.symbolize_keys) }
 
         it { expect { subject }.to raise_error(ActiveRecord::RecordNotFound) }
       end

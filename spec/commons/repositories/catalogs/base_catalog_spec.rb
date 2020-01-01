@@ -10,9 +10,9 @@ describe Commons::Repositories::Catalogs::BaseCatalog, type: :repository do
     Rails.cache.clear
   end
 
-  context 'create!' do
+  context 'create_from_params!' do
     let(:params) { { name: 'limit_money', value: 40_000 } }
-    subject { Catalogs::ApplicationParameterRepository.instance.create!(params) }
+    subject { Catalogs::ApplicationParameterRepository.instance.create_from_params!(params) }
     it do
       expect(cache.exist?('cached_catalogs_application_parameter_repository')).to be(false)
       is_expected.to be_an_instance_of Catalogs::ApplicationParameter
@@ -42,10 +42,9 @@ describe Commons::Repositories::Catalogs::BaseCatalog, type: :repository do
     end
   end
 
-  context 'update!' do
+  context 'update_from_params!' do
     let(:params) { { id: app_param.id, value: 40_000 } }
-
-    subject { Catalogs::ApplicationParameterRepository.instance.update!(params) }
+    subject { Catalogs::ApplicationParameterRepository.instance.update_from_params!(params) }
     it do
       expect(cache.exist?('cached_catalogs_application_parameter_repository')).to be(false)
       is_expected.to be_an_instance_of Catalogs::ApplicationParameter

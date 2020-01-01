@@ -14,7 +14,7 @@ module Commons
         #
         # @raises [ActiveRecord::RecordInvalid]
         #
-        def create!(params)
+        def create_from_params!(params)
           clear_cache
           @db_client.create!(params)
         end
@@ -44,7 +44,7 @@ module Commons
         #
         # @raises [ActiveRecord::RecordInvalid]
         #
-        def update!(id:, **params)
+        def update_from_params!(id:, **params)
           object = @db_client.find_by!(id: id)
           object.update!(params)
           clear_cache
@@ -55,8 +55,12 @@ module Commons
         private
 
         def initialize
+          @db_client ||= class_object
+        end
+
+        def class_object
           model_name = self.class.to_s.gsub("Repository", "")
-          @db_client ||= Object.const_get model_name
+          Object.const_get model_name
         end
       end
     end
