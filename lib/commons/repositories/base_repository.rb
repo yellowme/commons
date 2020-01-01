@@ -13,6 +13,24 @@ module Commons
       end
 
       #
+      # Método que devuelve todos los objetos que no han sido eliminados
+      #
+      # @return [Object,nil]
+      #
+      def kept
+        @db_client.where(deleted_at: nil)
+      end
+
+      #
+      # Método que devuelve todos los objetos que han sido eliminados
+      #
+      # @return [Object,nil]
+      #
+      def deleted
+        @db_client.where.not(deleted_at: nil)
+      end
+
+      #
       # Método que devuelve el objeto según su ID
       #
       # @return [Object,nil]
@@ -52,7 +70,7 @@ module Commons
       # @raise [ActiveRecord::RecordNotSaved]
       #
       def create!(object)
-        raise ArgumentError unless object.is_a? class_object
+        raise ArgumentError unless object.is_a? @db_client
 
         object.save!
       end
@@ -126,6 +144,25 @@ module Commons
       def update_from_params!(id:, **params)
         object = @db_client.find_by!(id: id)
         object.update!(params)
+
+        object
+      end
+
+      #
+      # Método que realiza un borrado lógico de un objeto
+      #
+      # @param [UUID] id Identificador del objeto
+      #
+      # @return [Object] Objeto eliminado
+      #
+      # @raises [ActiveRecord::RecordInvalid]
+      # @raises [ActiveModel::MissingAttributeError]
+      #
+      def soft_delete!(id)
+        raise ActiveModel::MissingAttributeError unless @db_client.column_names.include? "deleted_at"
+
+        object = @db_client.find_by!(id: id, deleted_at: nil)
+        object.update!(deleted_at: Time.current)
 
         object
       end

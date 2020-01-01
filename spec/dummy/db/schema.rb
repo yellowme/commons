@@ -27,6 +27,7 @@ ActiveRecord::Schema.define(version: 2020_01_01_204534) do
     t.string "last_name"
     t.string "sex"
     t.integer "age"
+    t.datetime "deleted_at"
   end
 
 end

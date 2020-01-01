@@ -10,21 +10,91 @@ RSpec.describe 'Commons::Repositories::BaseRepository' do
   describe 'all' do
     context 'when data exists' do
       let(:users_amount) { 10 }
+      let(:deleted_users_amount) { 5 }
       before do
         users_amount.times {
           UserRepository.instance.create_from_params!(**valid_params.to_h.symbolize_keys)
+        }
+        deleted_users_amount.times {
+          user = UserRepository.instance.create_from_params!(**valid_params.to_h.symbolize_keys)
+          UserRepository.instance.soft_delete!(user.id)
         }
       end
       subject { UserRepository.instance.all }
 
       it do
-        expect(subject.count).to eq users_amount
+        expect(subject.count).to eq users_amount + deleted_users_amount
         expect(subject.first).to be_an_instance_of User
       end
     end
 
     context 'when no data' do
       it { expect(UserRepository.instance.all).to be_empty }
+    end
+  end
+
+  describe 'kept' do
+    context 'when data exists' do
+      let(:users_amount) { 10 }
+      let(:deleted_users_amount) { 5 }
+      before do
+        users_amount.times {
+          UserRepository.instance.create_from_params!(**valid_params.to_h.symbolize_keys)
+        }
+        deleted_users_amount.times {
+          user = UserRepository.instance.create_from_params!(**valid_params.to_h.symbolize_keys)
+          UserRepository.instance.soft_delete!(user.id)
+        }
+      end
+      subject { UserRepository.instance.kept }
+
+      it do
+        expect(subject.count).to eq users_amount
+      end
+    end
+
+    context 'when no data' do
+      let(:deleted_users_amount) { 5 }
+      before do
+        deleted_users_amount.times {
+          user = UserRepository.instance.create_from_params!(**valid_params.to_h.symbolize_keys)
+          UserRepository.instance.soft_delete!(user.id)
+        }
+      end
+
+      it { expect(UserRepository.instance.kept).to be_empty }
+    end
+  end
+
+  describe 'deleted' do
+    context 'when data exists' do
+      let(:users_amount) { 10 }
+      let(:deleted_users_amount) { 5 }
+      before do
+        users_amount.times {
+          UserRepository.instance.create_from_params!(**valid_params.to_h.symbolize_keys)
+        }
+        deleted_users_amount.times {
+          user = UserRepository.instance.create_from_params!(**valid_params.to_h.symbolize_keys)
+          UserRepository.instance.soft_delete!(user.id)
+        }
+      end
+      subject { UserRepository.instance.deleted }
+
+      it do
+        expect(subject.count).to eq deleted_users_amount
+      end
+    end
+
+    context 'when no data' do
+      let(:users_amount) { 10 }
+      before do
+        users_amount.times {
+          UserRepository.instance.create_from_params!(**valid_params.to_h.symbolize_keys)
+        }
+      end
+
+      it { expect(UserRepository.instance.deleted).to be_empty }
     end
   end
 
@@ -192,7 +262,7 @@ RSpec.describe 'Commons::Repositories::BaseRepository' do
         end
       end
 
-      context 'is not a valid transaction' do
+      context 'is not a valid user' do
         let(:user) { build(:user, name: nil) }
 
         it do
@@ -236,7 +306,7 @@ RSpec.describe 'Commons::Repositories::BaseRepository' do
     end
 
     describe 'fails when' do
-      context 'is not a transaction' do
+      context 'is not a user' do
         let(:employee) { create(:employee) }
 
         it do
@@ -246,7 +316,7 @@ RSpec.describe 'Commons::Repositories::BaseRepository' do
         end
       end
 
-      context 'is not a valid transaction' do
+      context 'is not a valid user' do
         let(:user) { create(:user) }
         let(:invalid_user) do
           user.name = nil
@@ -301,6 +371,40 @@ RSpec.describe 'Commons::Repositories::BaseRepository' do
         subject { UserRepository.instance.update_from_params!(id: Faker::Number.number(digits: 2), **valid_params.to_h.symbolize_keys) }
 
         it { expect { subject }.to raise_error(ActiveRecord::RecordNotFound) }
+      end
+    end
+  end
+
+  describe 'soft_delete' do
+    describe 'works when' do
+      context 'using a valid user' do
+        let(:user) { create(:user) }
+
+        subject { UserRepository.instance.soft_delete!(user.id) }
+
+        it { expect(subject.deleted_at).not_to be nil }
+      end
+    end
+
+    describe 'fails when' do
+      context 'is not deletable' do
+        let(:employee) { create(:employee) }
+
+        it do
+          expect do
+            EmployeeRepository.instance.soft_delete!(employee.id)
+          end.to raise_error(ActiveModel::MissingAttributeError)
+        end
+      end
+
+      context 'is not a valid user' do
+        let(:user) { create(:user, deleted_at: Time.current) }
+
+        it do
+          expect do
+            UserRepository.instance.soft_delete!(user)
+          end.to raise_error(ActiveRecord::RecordNotFound)
+        end
       end
     end
   end
