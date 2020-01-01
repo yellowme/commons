@@ -14,11 +14,26 @@ RSpec.shared_examples_for "deletable" do |attrs|
       expect(model.deleted?).to be true
     end
 
+    it "when model deleted do update" do
+      model = subject
+      model.deleted_at = Time.current
+      model.save
+      model.name = Faker::Name.first_name
+      expect{model.save}.to raise_error(ActiveRecord::RecordInvalid)
+    end
+
     it "when model not deleted" do
       model = subject
       model.deleted_at = nil
       model.save
       expect(subject.deleted?).to be false
+    end
+
+    it "when model not deleted save" do
+      model = subject
+      model.deleted_at = nil
+      model.name = Faker::Name.first_name
+      expect{model.save}.not_to raise_error
     end
   end
 end

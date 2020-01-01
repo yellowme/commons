@@ -98,6 +98,49 @@ RSpec.describe 'Commons::Repositories::BaseRepository' do
     end
   end
 
+  describe 'find' do
+    context 'by a valid id' do
+      subject { UserRepository.instance.find(user.id) }
+
+      it { is_expected.to be_an_instance_of User }
+    end
+
+    context 'by non-existent id' do
+      it do
+        expect do
+          UserRepository.instance.find('my totally non-existent id')
+        end.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+  end
+
+  describe 'find_kept' do
+    context 'by a valid id' do
+      subject { UserRepository.instance.find_kept(user.id) }
+
+      it { is_expected.to be_an_instance_of User }
+    end
+
+    context 'by non-existent id' do
+      it do
+        expect do
+          UserRepository.instance.find_kept('my totally non-existent id')
+        end.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+
+    context 'by previously deleted user' do
+      before do
+        UserRepository.instance.soft_delete!(user.id)
+      end
+      subject { UserRepository.instance.find_kept(user.id) }
+
+      it do
+        expect{ subject }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+  end
+
   describe 'find_by' do
     context 'by a valid id' do
       subject { UserRepository.instance.find_by(id: user.id) }
@@ -107,6 +150,25 @@ RSpec.describe 'Commons::Repositories::BaseRepository' do
 
     context 'by non-existent id' do
       it { expect(UserRepository.instance.find_by(id: 'my totally non-existent id')).to be_falsey }
+    end
+  end
+
+  describe 'find_kept_by' do
+    context 'by a valid id' do
+      subject { UserRepository.instance.find_kept_by(id: user.id) }
+
+      it { is_expected.to be_an_instance_of User }
+    end
+
+    context 'by non-existent id' do
+      it { expect(UserRepository.instance.find_kept_by(id: 'my totally non-existent id')).to be_falsey }
+    end
+
+    context 'by previously deleted user' do
+      before do
+        UserRepository.instance.soft_delete!(user.id)
+      end
+      it { expect(UserRepository.instance.find_kept_by(id: 'my totally non-existent id')).to be_falsey }
     end
   end
 
@@ -121,6 +183,37 @@ RSpec.describe 'Commons::Repositories::BaseRepository' do
       it do
         expect do
           UserRepository.instance.find_by!(
+            id: 'my totally non-existent id'
+          )
+        end.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+  end
+
+  describe 'find_kept_by!' do
+    context 'by a valid id!' do
+      subject { UserRepository.instance.find_kept_by!(id: user.id) }
+
+      it { is_expected.to be_an_instance_of User }
+    end
+
+    context 'by non-existent id!' do
+      it do
+        expect do
+          UserRepository.instance.find_kept_by!(
+            id: 'my totally non-existent id'
+          )
+        end.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+
+    context 'by previously deleted user' do
+      before do
+        UserRepository.instance.soft_delete!(user.id)
+      end
+      it do
+        expect do
+          UserRepository.instance.find_kept_by!(
             id: 'my totally non-existent id'
           )
         end.to raise_error(ActiveRecord::RecordNotFound)

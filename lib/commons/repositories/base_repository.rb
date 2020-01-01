@@ -18,6 +18,8 @@ module Commons
       # @return [Object,nil]
       #
       def kept
+        raise ActiveModel::MissingAttributeError unless @db_client.column_names.include? "deleted_at"
+
         @db_client.where(deleted_at: nil)
       end
 
@@ -27,6 +29,8 @@ module Commons
       # @return [Object,nil]
       #
       def deleted
+        raise ActiveModel::MissingAttributeError unless @db_client.column_names.include? "deleted_at"
+
         @db_client.where.not(deleted_at: nil)
       end
 
@@ -37,6 +41,17 @@ module Commons
       #
       def find(id)
         @db_client.find(id)
+      end
+
+      #
+      # Método que devuelve el objeto según su ID
+      #
+      # @return [Object,nil]
+      #
+      def find_kept(id)
+        raise ActiveModel::MissingAttributeError unless @db_client.column_names.include? "deleted_at"
+
+        @db_client.find_by!(id: id, deleted_at: nil)
       end
 
       #
@@ -51,12 +66,42 @@ module Commons
       #
       # Método que devuelve el objeto según parámetros
       #
+      # @return [Object,nil]
+      #
+      def find_kept_by(params)
+        raise ActiveModel::MissingAttributeError unless @db_client.column_names.include? "deleted_at"
+
+        @db_client.find_by(
+          deleted_at: nil,
+          **params
+        )
+      end
+
+      #
+      # Método que devuelve el objeto según parámetros
+      #
       # @return [Object]
       #
       # @raise [ActiveRecord::RecordNotFound]
       #
       def find_by!(params)
         @db_client.find_by!(params)
+      end
+
+      #
+      # Método que devuelve el objeto según parámetros
+      #
+      # @return [Object]
+      #
+      # @raise [ActiveRecord::RecordNotFound]
+      #
+      def find_kept_by!(params)
+        raise ActiveModel::MissingAttributeError unless @db_client.column_names.include? "deleted_at"
+
+        @db_client.find_by!(
+          deleted_at: nil,
+          **params
+        )
       end
 
       #
