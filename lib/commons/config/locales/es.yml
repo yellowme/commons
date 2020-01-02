@@ -40,6 +40,10 @@ es:
       code: 'IER4010'
       title: 'No se cumplió una condición previa.'
       detail: 'IER4010: El servidor no cumple con una de las condiciones previas que el solicitante coloca en la solicitud.'
+    IER4011_resource_not_found:
+      code: 'IER4011'
+      title: 'Recurso no encontrado'
+      detail: 'IER4011: El recurso solicitado no se encuentra registrado'
     IER4222_unprocessable_entity:
       code: 'IER4222'
       title: 'Incapaz de procesar la petición'

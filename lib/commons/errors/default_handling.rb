@@ -8,12 +8,12 @@ module Commons
           # own custom rescue_from handlers https://stackoverflow.com/a/9121054/3287738
           # WARNING
           rescue_from ActiveRecord::RecordNotFound do |e|
-            respond NotFound.new  e.message,
-                                  detail: {
-                                    model: e.model,
-                                    id: e.id,
-                                    primary_key: e.primary_key
-                                  }
+            respond ResourceNotFound.new e.message,
+                                         detail: {
+                                           model: e.model,
+                                           id: e.id,
+                                           primary_key: e.primary_key
+                                         }
           end
 
           rescue_from ActiveRecord::RecordInvalid do |e|
@@ -34,8 +34,8 @@ module Commons
           end
 
           rescue_from ActionController::RoutingError do |e|
-            respond NotFound.new  e.message,
-                                  detail: { failures: e.failures }
+            respond RouteNotFound.new e.message,
+                                      detail: { failures: e.failures }
           end
         end
       end

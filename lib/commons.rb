@@ -47,6 +47,7 @@ require 'commons/errors/missing_parameter'
 require 'commons/errors/not_unique'
 require 'commons/errors/payment_required'
 require 'commons/errors/precondition_failed'
+require 'commons/errors/resource_not_found'
 require 'commons/errors/route_not_found'
 require 'commons/errors/unauthorized'
 
