@@ -9,7 +9,7 @@ module Commons
           # WARNING
           rescue_from ActiveRecord::RecordNotFound do |e|
             respond ResourceNotFound.new e.message,
-                                         detail: {
+                                         meta: {
                                            model: e.model,
                                            id: e.id,
                                            primary_key: e.primary_key
