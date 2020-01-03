@@ -18,7 +18,7 @@ module Commons
 
           rescue_from ActiveRecord::RecordInvalid do |e|
             respond InvalidResource.new e.message,
-                                        validation_errors: e.record.errors.to_hash
+                                        validation_errors: e&.record&.errors&.to_hash
           end
 
           rescue_from ArgumentError do |e|
