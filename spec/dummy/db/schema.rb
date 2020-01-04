@@ -28,6 +28,8 @@ ActiveRecord::Schema.define(version: 2020_01_01_204534) do
     t.string "sex"
     t.integer "age"
     t.datetime "deleted_at"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
 end

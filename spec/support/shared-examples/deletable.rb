@@ -18,7 +18,7 @@ RSpec.shared_examples_for "deletable" do |attrs|
       model = subject
       model.deleted_at = Time.current
       model.save
-      model.name = Faker::Name.first_name
+      model.created_at = Time.current
       expect{model.save}.to raise_error(ActiveRecord::RecordInvalid)
     end
 
@@ -32,7 +32,7 @@ RSpec.shared_examples_for "deletable" do |attrs|
     it "when model not deleted save" do
       model = subject
       model.deleted_at = nil
-      model.name = Faker::Name.first_name
+      model.created_at = Time.current
       expect{model.save}.not_to raise_error
     end
   end
