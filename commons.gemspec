@@ -10,18 +10,22 @@ Gem::Specification.new do |spec|
   spec.date        = '2019-12-10'
   spec.summary     = "Commons is Yellowme's Rails APIs utilities gem"
   spec.description = "Commons is Yellowme's Rails APIs utilities gem"
-  spec.files       = [
-                       "lib/commons.rb",
-                       "spec/support/shared-examples/capitalizable.rb",
-                       "spec/support/shared-examples/undestroyable.rb",
-                       "spec/support/shared-examples/stripable.rb"
-                     ]
   spec.authors     = ["Yellowme"]
   spec.email       = 'hola@yellowme.mx'
   spec.homepage    = 'https://github.com/yellowme/commons-rails'
   spec.license      = 'MIT'
 
-  spec.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
+  #spec.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
+  #spec.files       = [
+  #                     "lib/commons.rb",
+  #                     "spec/support/shared-examples/capitalizable.rb",
+  #                     "spec/support/shared-examples/undestroyable.rb",
+  #                     "spec/support/shared-examples/stripable.rb"
+  #                   ]
+  spec.files       = `git ls-files`.split($/)
+  spec.executables = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
+  spec.test_files  = `git ls-files -- {test,spec,features}/*`.split("\n")
+
 
   spec.add_dependency "rails", "~> 6.0.1"
   spec.add_dependency 'json', '~> 1.8'
