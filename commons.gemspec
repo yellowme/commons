@@ -38,6 +38,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "strip_attributes"
   spec.add_dependency "jwt"
   spec.add_dependency "dry-validation"
+  spec.add_dependency "phonelib", "~> 0.6.29"
 
   spec.add_development_dependency "sqlite3"
   spec.add_development_dependency "rspec-rails"

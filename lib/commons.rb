@@ -3,6 +3,7 @@ require 'commons/railtie'
 require 'strip_attributes'
 require 'active_model_serializers'
 require 'jwt'
+require 'phonelib'
 
 require 'commons/config'
 
@@ -31,6 +32,7 @@ require 'commons/concerns/validations/undestroyable'
 require 'commons/formatter/null_attributes_remover'
 require 'commons/formatter/regex_constants'
 require 'commons/formatter/string_utils'
+require 'commons/formatter/e164_phone'
 
 # errors
 require 'commons/errors/error_base'
@@ -58,6 +60,8 @@ mydir = __dir__
 
 I18n.load_path += Dir[File.join(mydir, 'commons', 'config', 'locales', '**/*.yml').to_s]
 I18n.reload! if I18n.backend.initialized?
+
+Phonelib.default_country = "MX"
 
 module Commons
 end
