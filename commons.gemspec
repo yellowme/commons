@@ -20,7 +20,7 @@ Gem::Specification.new do |spec|
   spec.test_files  = `git ls-files -- {test,spec,features}/*`.split("\n")
 
 
-  spec.add_dependency "rails", "~> 6.0.1"
+  spec.add_dependency "rails", "~> 5.2"
   spec.add_dependency 'json', '~> 1.8'
   spec.add_dependency "active_model_serializers", "~> 0.10.10"
   spec.add_dependency "strip_attributes"
