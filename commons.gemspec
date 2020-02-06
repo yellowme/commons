@@ -21,7 +21,7 @@ Gem::Specification.new do |spec|
 
 
   spec.add_dependency "rails", "~> 5.2"
-  spec.add_dependency 'json', '~> 1.8'
+  spec.add_dependency 'json', '~> 2.0'
   spec.add_dependency "active_model_serializers", "~> 0.10.10"
   spec.add_dependency "strip_attributes"
   spec.add_dependency "jwt"

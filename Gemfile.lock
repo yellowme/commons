@@ -1,10 +1,10 @@
 PATH
   remote: .
   specs:
-    commons_yellowme (0.11.1)
+    commons_yellowme (0.11.2)
       active_model_serializers (~> 0.10.10)
       dry-validation
-      json (~> 1.8)
+      json (~> 2.0)
       jwt
       phonelib (~> 0.6.29)
       rails (~> 5.2)
@@ -116,7 +116,7 @@ GEM
       activesupport (>= 4.2.0)
     i18n (1.7.1)
       concurrent-ruby (~> 1.0)
-    json (1.8.6)
+    json (2.3.0)
     jsonapi-renderer (0.2.2)
     jwt (2.2.1)
     loofah (2.4.0)
