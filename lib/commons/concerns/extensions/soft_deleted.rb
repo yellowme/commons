@@ -5,18 +5,17 @@ module Commons
         extend ActiveSupport::Concern
 
         included do
-
           before_validation :check_not_deleted, on: [:update]
 
           def deleted?
             raise ActiveModel::MissingAttributeError unless has_required_fields?
             self.deleted_at.present?
           end
-        end
 
-        def self.default_scope
-          raise ActiveModel::MissingAttributeError unless has_required_fields?
-          where(deleted_at: nil)
+          def self.default_scope
+            raise ActiveModel::MissingAttributeError unless has_attribute?(:deleted_at)
+            where(deleted_at: nil)
+          end
         end
 
         private

@@ -11,6 +11,14 @@ module Commons
       delegate :all, to: :@db_client
 
       #
+      # Método que devuelve todos los objetos que no han sido eliminados
+      #
+      # @return [Object,nil]
+      #
+      delegate :where, to: :@db_client
+      alias_method :query, :where
+
+      #
       # Método que devuelve todos los objetos que han sido eliminados
       #
       # @return [Object, nil]

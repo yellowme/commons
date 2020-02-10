@@ -33,10 +33,8 @@ RSpec.describe Commons::Concerns::Extensions::SoftDeleted do
     end
 
     it 'when model is not soft_deletable' do
-      # given
-      employee = Employee.new
       # do
-      expect{ employee.deleted? }.to raise_error(ActiveModel::MissingAttributeError)
+      expect{ Employee.new }.to raise_error(ActiveModel::MissingAttributeError)
     end
   end
 end

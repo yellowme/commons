@@ -23,13 +23,49 @@ RSpec.describe Commons::Repositories::BaseRepository do
       subject { UserRepository.instance.all }
 
       it do
-        expect(subject.count).to eq users_amount + deleted_users_amount
+        expect(subject.count).to eq users_amount
         expect(subject.first).to be_an_instance_of User
       end
     end
 
     context 'when no data' do
       it { expect(UserRepository.instance.all).to be_empty }
+    end
+  end
+
+  describe 'query' do
+    context 'when data exists' do
+      let(:users_amount) { 10 }
+      let(:deleted_users_amount) { 5 }
+      before do
+        users_amount.times {
+          UserRepository.instance.create_from_params!(**valid_params.to_h.symbolize_keys)
+        }
+        deleted_users_amount.times {
+          user = UserRepository.instance.create_from_params!(**valid_params.to_h.symbolize_keys)
+          UserRepository.instance.destroy!(user)
+        }
+      end
+
+      subject { UserRepository.instance.query.not(name: nil) }
+
+      it do
+        expect(subject.count).to eq users_amount
+      end
+    end
+
+    context 'when no data' do
+      let(:deleted_users_amount) { 5 }
+      before do
+        deleted_users_amount.times {
+          user = UserRepository.instance.create_from_params!(**valid_params.to_h.symbolize_keys)
+          UserRepository.instance.destroy!(user)
+        }
+      end
+
+      subject { UserRepository.instance.query.not(name: nil) }
+
+      it { expect(subject).to be_empty }
     end
   end
 
@@ -311,12 +347,12 @@ RSpec.describe Commons::Repositories::BaseRepository do
     end
 
     describe 'fails when' do
-      context 'is not a user' do
-        let(:employee) { build(:employee) }
+      context 'is not a employee' do
+        let(:user) { build(:user) }
 
         it do
           expect do
-            UserRepository.instance.create!(employee)
+            EmployeeRepository.instance.create!(user)
           end.to raise_error(ArgumentError)
         end
       end
@@ -366,11 +402,11 @@ RSpec.describe Commons::Repositories::BaseRepository do
 
     describe 'fails when' do
       context 'is not a user' do
-        let(:employee) { create(:employee) }
+        let(:user) { create(:user) }
 
         it do
           expect do
-            UserRepository.instance.update!(employee)
+            EmployeeRepository.instance.update!(user)
           end.to raise_error(ArgumentError)
         end
       end
