@@ -24,7 +24,7 @@ require 'commons/services/concerns/callable'
 
 # models
 require 'commons/concerns/attributes/sex'
-require 'commons/concerns/extensions/deleted'
+require 'commons/concerns/extensions/soft_deleted'
 require 'commons/concerns/guard/capitalizable'
 require 'commons/concerns/validations/undestroyable'
 

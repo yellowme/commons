@@ -1,6 +1,6 @@
 class User < ApplicationRecord
   include Commons::Concerns::Attributes::Sex
-  include Commons::Concerns::Extensions::Deleted
+  include Commons::Concerns::Extensions::SoftDeleted
   include Commons::Concerns::Guard::Capitalizable
   include Commons::Concerns::Validations::Undestroyable
 

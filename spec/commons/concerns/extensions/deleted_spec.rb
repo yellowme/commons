@@ -1,4 +1,4 @@
-RSpec.describe Commons::Concerns::Extensions::Deleted do
+RSpec.describe Commons::Concerns::Extensions::SoftDeleted do
   let(:user) { create(:user) }
 
   subject do
@@ -18,7 +18,7 @@ RSpec.describe Commons::Concerns::Extensions::Deleted do
     it 'when deleted user' do
       # given
       user = subject
-      user = UserRepository.instance.soft_delete!(user.id)
+      user = UserRepository.instance.destroy!(user)
       # do
       expect(user.deleted?).to eq true
     end
@@ -26,13 +26,13 @@ RSpec.describe Commons::Concerns::Extensions::Deleted do
     it 'when deleted user denies save' do
       # given
       user = subject
-      user = UserRepository.instance.soft_delete!(user.id)
+      user = UserRepository.instance.destroy!(user)
       user.name = Faker::Name.first_name
       # do
       expect{ user.save }.to raise_error(ActiveRecord::RecordInvalid)
     end
 
-    it 'when model is not deletable' do
+    it 'when model is not soft_deletable' do
       # given
       employee = Employee.new
       # do

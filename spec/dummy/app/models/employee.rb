@@ -1,3 +1,3 @@
 class Employee < ApplicationRecord
-  include Commons::Concerns::Extensions::Deleted
+  include Commons::Concerns::Extensions::SoftDeleted
 end
