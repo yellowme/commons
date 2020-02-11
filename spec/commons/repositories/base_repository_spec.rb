@@ -1,4 +1,4 @@
-RSpec.describe 'Commons::Repositories::BaseRepository' do
+RSpec.describe Commons::Repositories::BaseRepository do
   let(:user) { create(:user) }
   let(:valid_params) do
     {
@@ -17,13 +17,13 @@ RSpec.describe 'Commons::Repositories::BaseRepository' do
         }
         deleted_users_amount.times {
           user = UserRepository.instance.create_from_params!(**valid_params.to_h.symbolize_keys)
-          UserRepository.instance.soft_delete!(user.id)
+          UserRepository.instance.destroy!(user)
         }
       end
       subject { UserRepository.instance.all }
 
       it do
-        expect(subject.count).to eq users_amount + deleted_users_amount
+        expect(subject.count).to eq users_amount
         expect(subject.first).to be_an_instance_of User
       end
     end
@@ -33,7 +33,7 @@ RSpec.describe 'Commons::Repositories::BaseRepository' do
     end
   end
 
-  describe 'kept' do
+  describe 'query' do
     context 'when data exists' do
       let(:users_amount) { 10 }
       let(:deleted_users_amount) { 5 }
@@ -43,10 +43,11 @@ RSpec.describe 'Commons::Repositories::BaseRepository' do
         }
         deleted_users_amount.times {
           user = UserRepository.instance.create_from_params!(**valid_params.to_h.symbolize_keys)
-          UserRepository.instance.soft_delete!(user.id)
+          UserRepository.instance.destroy!(user)
         }
       end
-      subject { UserRepository.instance.kept }
+
+      subject { UserRepository.instance.query.not(name: nil) }
 
       it do
         expect(subject.count).to eq users_amount
@@ -58,11 +59,13 @@ RSpec.describe 'Commons::Repositories::BaseRepository' do
       before do
         deleted_users_amount.times {
           user = UserRepository.instance.create_from_params!(**valid_params.to_h.symbolize_keys)
-          UserRepository.instance.soft_delete!(user.id)
+          UserRepository.instance.destroy!(user)
         }
       end
 
-      it { expect(UserRepository.instance.kept).to be_empty }
+      subject { UserRepository.instance.query.not(name: nil) }
+
+      it { expect(subject).to be_empty }
     end
   end
 
@@ -76,7 +79,7 @@ RSpec.describe 'Commons::Repositories::BaseRepository' do
         }
         deleted_users_amount.times {
           user = UserRepository.instance.create_from_params!(**valid_params.to_h.symbolize_keys)
-          UserRepository.instance.soft_delete!(user.id)
+          UserRepository.instance.destroy!(user)
         }
       end
       subject { UserRepository.instance.deleted }
@@ -114,30 +117,27 @@ RSpec.describe 'Commons::Repositories::BaseRepository' do
     end
   end
 
-  describe 'find_kept' do
+  describe 'find_deleted' do
     context 'by a valid id' do
-      subject { UserRepository.instance.find_kept(user.id) }
+      subject { UserRepository.instance.find_deleted(user.id) }
 
-      it { is_expected.to be_an_instance_of User }
+      it { is_expected.to be_nil }
     end
 
     context 'by non-existent id' do
-      it do
-        expect do
-          UserRepository.instance.find_kept('my totally non-existent id')
-        end.to raise_error(ActiveRecord::RecordNotFound)
-      end
+      subject { UserRepository.instance.find_deleted('my totally non-existent id') }
+
+      it { is_expected.to be_nil }
     end
 
     context 'by previously deleted user' do
       before do
-        UserRepository.instance.soft_delete!(user.id)
+        UserRepository.instance.destroy!(user)
       end
-      subject { UserRepository.instance.find_kept(user.id) }
 
-      it do
-        expect{ subject }.to raise_error(ActiveRecord::RecordNotFound)
-      end
+      subject { UserRepository.instance.find_deleted(user.id) }
+
+      it { is_expected.to be_an_instance_of User }
     end
   end
 
@@ -153,22 +153,27 @@ RSpec.describe 'Commons::Repositories::BaseRepository' do
     end
   end
 
-  describe 'find_kept_by' do
+  describe 'find_deleted_by' do
     context 'by a valid id' do
-      subject { UserRepository.instance.find_kept_by(id: user.id) }
+      subject { UserRepository.instance.find_deleted_by(id: user.id) }
 
-      it { is_expected.to be_an_instance_of User }
+      it { is_expected.to be_falsey }
     end
 
     context 'by non-existent id' do
-      it { expect(UserRepository.instance.find_kept_by(id: 'my totally non-existent id')).to be_falsey }
+      subject { UserRepository.instance.find_deleted_by(id: 'my totally non-existent id') }
+
+      it { is_expected.to be_falsey }
     end
 
     context 'by previously deleted user' do
       before do
-        UserRepository.instance.soft_delete!(user.id)
+        UserRepository.instance.destroy!(user)
       end
-      it { expect(UserRepository.instance.find_kept_by(id: 'my totally non-existent id')).to be_falsey }
+
+      subject { UserRepository.instance.find_deleted_by(id: user.id) }
+
+      it { is_expected.to be_an_instance_of User }
     end
   end
 
@@ -190,34 +195,31 @@ RSpec.describe 'Commons::Repositories::BaseRepository' do
     end
   end
 
-  describe 'find_kept_by!' do
-    context 'by a valid id!' do
-      subject { UserRepository.instance.find_kept_by!(id: user.id) }
+  describe 'find_deleted_by!' do
+    context 'by a valid active id' do
+      subject { UserRepository.instance.find_deleted_by!(id: user.id) }
 
-      it { is_expected.to be_an_instance_of User }
+      it do
+        expect { subject }.to raise_error(ActiveRecord::RecordNotFound)
+      end
     end
 
     context 'by non-existent id!' do
+      subject { UserRepository.instance.find_deleted_by!(id: 'my totally non-existent id') }
+
       it do
-        expect do
-          UserRepository.instance.find_kept_by!(
-            id: 'my totally non-existent id'
-          )
-        end.to raise_error(ActiveRecord::RecordNotFound)
+        expect { subject }.to raise_error(ActiveRecord::RecordNotFound)
       end
     end
 
     context 'by previously deleted user' do
       before do
-        UserRepository.instance.soft_delete!(user.id)
+        UserRepository.instance.destroy!(user)
       end
-      it do
-        expect do
-          UserRepository.instance.find_kept_by!(
-            id: 'my totally non-existent id'
-          )
-        end.to raise_error(ActiveRecord::RecordNotFound)
-      end
+
+      subject { UserRepository.instance.find_deleted_by!(id: user.id) }
+
+      it { is_expected.to be_an_instance_of User }
     end
   end
 
@@ -345,12 +347,12 @@ RSpec.describe 'Commons::Repositories::BaseRepository' do
     end
 
     describe 'fails when' do
-      context 'is not a user' do
-        let(:employee) { build(:employee) }
+      context 'is not a employee' do
+        let(:user) { build(:user) }
 
         it do
           expect do
-            UserRepository.instance.create!(employee)
+            EmployeeRepository.instance.create!(user)
           end.to raise_error(ArgumentError)
         end
       end
@@ -400,11 +402,21 @@ RSpec.describe 'Commons::Repositories::BaseRepository' do
 
     describe 'fails when' do
       context 'is not a user' do
-        let(:employee) { create(:employee) }
+        let(:user) { create(:user) }
 
         it do
           expect do
-            UserRepository.instance.update!(employee)
+            EmployeeRepository.instance.update!(user)
+          end.to raise_error(ArgumentError)
+        end
+      end
+
+      context 'is not a previously saved' do
+        let(:user) { build(:user) }
+
+        it do
+          expect do
+            UserRepository.instance.update!(user)
           end.to raise_error(ArgumentError)
         end
       end
@@ -473,7 +485,7 @@ RSpec.describe 'Commons::Repositories::BaseRepository' do
       context 'using a valid user' do
         let(:user) { create(:user) }
 
-        subject { UserRepository.instance.soft_delete!(user.id) }
+        subject { UserRepository.instance.destroy!(user) }
 
         it { expect(subject.deleted_at).not_to be nil }
       end
@@ -485,7 +497,7 @@ RSpec.describe 'Commons::Repositories::BaseRepository' do
 
         it do
           expect do
-            EmployeeRepository.instance.soft_delete!(employee.id)
+            EmployeeRepository.instance.destroy!(employee)
           end.to raise_error(ActiveModel::MissingAttributeError)
         end
       end
@@ -495,8 +507,8 @@ RSpec.describe 'Commons::Repositories::BaseRepository' do
 
         it do
           expect do
-            UserRepository.instance.soft_delete!(user)
-          end.to raise_error(ActiveRecord::RecordNotFound)
+            UserRepository.instance.destroy!(user)
+          end.to raise_error(ActiveRecord::RecordInvalid)
         end
       end
     end

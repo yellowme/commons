@@ -39,7 +39,7 @@ RSpec.describe Commons::Formatter::RegexConstants do
     end
   end
 
-  describe 'CRUP' do
+  describe 'CURP' do
     context 'works when valid' do
       curp_list = [
         'BEML920313HMCLNS09',
@@ -95,6 +95,69 @@ RSpec.describe Commons::Formatter::RegexConstants do
       rfc_list.each do |rfc|
         it "for RFC #{rfc}" do
           expect(rfc =~ Commons::Formatter::RegexConstants::RFC).to be_falsey
+        end
+      end
+    end
+  end
+
+  describe 'ELECTOR_KEY' do
+    context 'works when valid' do
+      elector_list = [
+        'PXMXJX94021709H000',
+        'OXSXJX96062909H000',
+      ]
+      elector_list.each do |k|
+        it "for clave #{k}" do
+          expect(k =~ Commons::Formatter::RegexConstants::ELECTOR_KEY).to be >= 0
+        end
+      end
+    end
+
+    context 'fail when not valid' do
+      elector_list = [
+        'xxxx',
+        '11111',
+        'XAXX000000HXXYYY00'
+      ]
+      elector_list.each do |k|
+        it "for clave #{k}" do
+          expect(k =~ Commons::Formatter::RegexConstants::ELECTOR_KEY).to be_falsey
+        end
+      end
+    end
+  end
+
+  describe 'MONEY' do
+    context 'works when valid' do
+      number_list = [
+        '10.00',
+        '1',
+        '-1.0',
+        '+1.0',
+        '0.000001',
+        '10000.000',
+        '99999999999999999999999999999999999999',
+        '99999999999999999999999999999999999999.999999',
+        '0',
+      ]
+      number_list.each do |number|
+        it "for number #{number}" do
+          expect(number =~ Commons::Formatter::RegexConstants::MONEY).to be >= 0
+        end
+      end
+    end
+
+    context 'fail when not valid' do
+      number_list = [
+        '',
+        ' 0.0 ',
+        '0.0000001',
+        '$0.00',
+        '.1'
+      ]
+      number_list.each do |number|
+        it "for number #{number}" do
+          expect(number =~ Commons::Formatter::RegexConstants::MONEY).to be_falsey
         end
       end
     end

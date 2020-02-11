@@ -4,54 +4,47 @@ module Commons
       include Singleton
 
       #
-      # Método que devuelve todos los objetos
+      # Método que devuelve todos los objetos activos
       #
-      # @return [Object,nil]
+      # @return [Arrat<Object>, nil]
       #
-      def all
-        @db_client.all
-      end
+      delegate :all, to: :@db_client
 
       #
       # Método que devuelve todos los objetos que no han sido eliminados
       #
       # @return [Object,nil]
       #
-      def kept
-        raise ActiveModel::MissingAttributeError unless @db_client.column_names.include? "deleted_at"
-
-        @db_client.where(deleted_at: nil)
-      end
+      delegate :where, to: :@db_client
+      alias_method :query, :where
 
       #
       # Método que devuelve todos los objetos que han sido eliminados
       #
-      # @return [Object,nil]
+      # @return [Object, nil]
       #
       def deleted
-        raise ActiveModel::MissingAttributeError unless @db_client.column_names.include? "deleted_at"
+        raise ActiveModel::MissingAttributeError unless @db_client.include? Commons::Concerns::Extensions::SoftDeleted
 
-        @db_client.where.not(deleted_at: nil)
+        @db_client.unscoped.where.not(deleted_at: nil)
       end
+
+      #
+      # Método que devuelve el objeto según su ID
+      #
+      # @return [Object, nil]
+      #
+      delegate :find, to: :@db_client
 
       #
       # Método que devuelve el objeto según su ID
       #
       # @return [Object,nil]
       #
-      def find(id)
-        @db_client.find(id)
-      end
+      def find_deleted(id)
+        raise ActiveModel::MissingAttributeError unless @db_client.include? Commons::Concerns::Extensions::SoftDeleted
 
-      #
-      # Método que devuelve el objeto según su ID
-      #
-      # @return [Object,nil]
-      #
-      def find_kept(id)
-        raise ActiveModel::MissingAttributeError unless @db_client.column_names.include? "deleted_at"
-
-        @db_client.find_by!(id: id, deleted_at: nil)
+        @db_client.unscoped.where(id: id).where.not(deleted_at: nil).first
       end
 
       #
@@ -59,22 +52,17 @@ module Commons
       #
       # @return [Object,nil]
       #
-      def find_by(params)
-        @db_client.find_by(params)
-      end
+      delegate :find_by, to: :@db_client
 
       #
       # Método que devuelve el objeto según parámetros
       #
       # @return [Object,nil]
       #
-      def find_kept_by(params)
-        raise ActiveModel::MissingAttributeError unless @db_client.column_names.include? "deleted_at"
+      def find_deleted_by(params)
+        raise ActiveModel::MissingAttributeError unless @db_client.include? Commons::Concerns::Extensions::SoftDeleted
 
-        @db_client.find_by(
-          deleted_at: nil,
-          **params
-        )
+        @db_client.unscoped.where.not(deleted_at: nil).where(**params).first
       end
 
       #
@@ -84,9 +72,7 @@ module Commons
       #
       # @raise [ActiveRecord::RecordNotFound]
       #
-      def find_by!(params)
-        @db_client.find_by!(params)
-      end
+      delegate :find_by!, to: :@db_client
 
       #
       # Método que devuelve el objeto según parámetros
@@ -95,13 +81,10 @@ module Commons
       #
       # @raise [ActiveRecord::RecordNotFound]
       #
-      def find_kept_by!(params)
-        raise ActiveModel::MissingAttributeError unless @db_client.column_names.include? "deleted_at"
+      def find_deleted_by!(params)
+        raise ActiveModel::MissingAttributeError unless @db_client.include? Commons::Concerns::Extensions::SoftDeleted
 
-        @db_client.find_by!(
-          deleted_at: nil,
-          **params
-        )
+        @db_client.unscoped.where.not(deleted_at: nil).where(**params).first!
       end
 
       #
@@ -115,9 +98,10 @@ module Commons
       # @raise [ActiveRecord::RecordNotSaved]
       #
       def create!(object)
-        raise ArgumentError unless object.is_a? @db_client
+        raise ArgumentError unless object.is_a?(@db_client)
+        raise ActiveRecord::RecordInvalid.new(object) unless object.valid?
 
-        object.save!
+        save_object(object)
       end
 
       #
@@ -143,10 +127,7 @@ module Commons
       #
       # @raises [ActiveRecord::RecordInvalid]
       #
-      def find_or_create_by!(params, &block)
-        object = @db_client.find_by(params) || @db_client.create!(params, &block)
-        object
-      end
+      delegate :find_or_create_by!, to: :@db_client
 
       #
       # Método que realiza una busqueda de la primer entrada,
@@ -174,7 +155,13 @@ module Commons
       # @raise [ActiveRecord::RecordNotSaved]
       #
       def update!(object)
-        create!(object)
+        if !object.is_a?(@db_client) || object.id.blank?
+          raise ArgumentError
+        end
+
+        raise ActiveRecord::RecordInvalid.new(object) unless object.valid?
+
+        save_object(object)
       end
 
       #
@@ -203,24 +190,42 @@ module Commons
       # @raises [ActiveRecord::RecordInvalid]
       # @raises [ActiveModel::MissingAttributeError]
       #
-      def soft_delete!(id)
-        raise ActiveModel::MissingAttributeError unless @db_client.column_names.include? "deleted_at"
-
-        object = @db_client.find_by!(id: id, deleted_at: nil)
-        object.update!(deleted_at: Time.current)
-
-        object
+      def destroy!(object)
+        if @db_client.include? Commons::Concerns::Extensions::SoftDeleted
+          soft_delete!(object)
+        else
+          hard_delete!(object)
+        end
       end
 
-      private
+      protected
 
       def initialize
-        @db_client ||= class_object
+        @db_client = class_object
       end
 
       def class_object
         model_name = self.class.to_s.gsub("Repository", "")
         Object.const_get model_name
+      end
+
+      private
+
+      def save_object(object)
+        object.save
+      end
+
+      def soft_delete!(object)
+        raise ActiveModel::MissingAttributeError unless @db_client.column_names.include?("deleted_at")
+        object.update!(deleted_at: Time.current)
+
+        object
+      end
+
+      def hard_delete!(object)
+        object.destroy!
+
+        object
       end
     end
   end
