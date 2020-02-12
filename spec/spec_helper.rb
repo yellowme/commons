@@ -14,8 +14,26 @@
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 require 'simplecov'
+require 'simplecov_small_badge'
 
-SimpleCov.start
+# Wherever your SimpleCov.start block is (spec_helper.rb, test_helper.rb, or .simplecov)
+SimpleCov.start do
+  # add your normal SimpleCov configs
+  # add_filter "/app/model"
+  # call SimpleCov::Formatter::BadgeFormatter after the normal HTMLFormatter
+  SimpleCov.formatters = SimpleCov::Formatter::MultiFormatter.new([
+    SimpleCov::Formatter::HTMLFormatter,
+    SimpleCovSmallBadge::Formatter
+  ])
+end
+
+# configure any options you want for SimpleCov::Formatter::BadgeFormatter
+SimpleCovSmallBadge.configure do |config|
+  # does not created rounded borders
+  config.rounded_border = true
+  # set the background for the title to darkgrey
+  config.background = '#ffffcc'
+end
 
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
