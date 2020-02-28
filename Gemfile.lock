@@ -8,6 +8,7 @@ PATH
       jwt
       phonelib (~> 0.6.29)
       rails (~> 5.2)
+      simplecov-small-badge
       strip_attributes
 
 GEM
@@ -218,7 +219,6 @@ DEPENDENCIES
   faker
   rspec-rails
   simplecov
-  simplecov-small-badge
   sqlite3
 
 BUNDLED WITH

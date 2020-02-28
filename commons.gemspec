@@ -25,6 +25,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'jwt'
   spec.add_dependency 'phonelib', '~> 0.6.29'
   spec.add_dependency 'rails', '~> 5.2'
+  spec.add_dependency 'simplecov-small-badge'
   spec.add_dependency 'strip_attributes'
 
   spec.add_development_dependency 'factory_bot_rails', '~> 5.1.1'
